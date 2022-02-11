@@ -1,0 +1,1 @@
+update funcionaries set  cargo = "Treinee", salario = 1000 WHERE id_funcionaries = 1;
