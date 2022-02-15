@@ -9,9 +9,9 @@ create table tb_categoria(
     create table tb_pizza(
 	id int not null auto_increment,
     sabor varchar(50) not null,
-    valor int not null,
-    massa int not null,
-    borda int not null,
+    valor double not null,
+    massa varchar(15) not null,
+    borda varchar(15) not null,
     id_cat int not null,
     PRIMARY KEY(id),
    FOREIGN KEY (id_cat) REFERENCES tb_categoria(id));
