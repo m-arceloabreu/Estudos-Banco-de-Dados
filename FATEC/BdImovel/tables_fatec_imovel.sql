@@ -1,103 +1,111 @@
+create database fatec_imovel;
 use fatec_imovel;
 
+
 CREATE TABLE estado(
-	sg_estado INTEGER NOT NULL  PRIMARY KEY,
-    nm_estado VARCHAR (50) NOT NULL
+	sgEstado CHAR(2) NOT NULL  PRIMARY KEY,
+    nmEstado VARCHAR (50) NOT NULL
 );
 
 CREATE TABLE cidade(
-	cd_cidade INTEGER NOT NULL PRIMARY KEY,
-    nm_cidade VARCHAR (50) NOT NULL,
-    sg_estado INTEGER NOT NULL,
-    FOREIGN KEY(sg_estado) REFERENCES estado(sg_estado)
+	cdCidade INTEGER NOT NULL PRIMARY KEY,
+    nmCidade VARCHAR (50) NOT NULL,
+    sgEstado CHAR(2) NOT NULL,
+    FOREIGN KEY(sgEstado) REFERENCES estado(sgEstado)
     );
 
 CREATE TABLE bairro(
-	cd_bairro INTEGER NOT NULL PRIMARY KEY,
-    nm_bairro VARCHAR (50) NOT NULL,
-    cd_cidade INTEGER NOT NULL,
-    sg_estado INTEGER NOT NULL,
-    FOREIGN KEY (cd_cidade) 
-	REFERENCES cidade(cd_cidade),
-    FOREIGN KEY (sg_estado) 
-	REFERENCES estado(sg_estado)
+	cdBairro INTEGER NOT NULL PRIMARY KEY,
+    nmBairro VARCHAR (50) NOT NULL,
+    cdCidade INTEGER NOT NULL,
+    sgEstado CHAR(2) NOT NULL,
+    FOREIGN KEY (cdCidade) 
+	REFERENCES cidade(cdCidade),
+    FOREIGN KEY (sgEstado) 
+	REFERENCES estado(sgEstado)
 );
 
-CREATE TABLE compradores(
-	cd_comprador INTEGER NOT NULL PRIMARY KEY,
-    nm_comprador VARCHAR (50) NOT NULL,
-    nm_enderecocomprador VARCHAR(255) NOT NULL,
-    nr_cpfcomprador VARCHAR(11) NOT NULL,
-    cd_cidade INTEGER NOT NULL,
-    cd_bairro INTEGER NOT NULL,
-    sg_estado INTEGER NOT NULL,
-    tel_comprador NUMERIC(11,0) NOT NULL,
-    FOREIGN KEY (cd_cidade)
-    REFERENCES cidade(cd_cidade),
-    FOREIGN KEY (cd_bairro)
-    REFERENCES bairro(cd_bairro),
-    FOREIGN KEY (sg_estado)
-    REFERENCES estado(sg_estado)
+CREATE TABLE comprador(
+	cdComprador INTEGER NOT NULL PRIMARY KEY,
+    nmComprador VARCHAR (50) NOT NULL,
+    nmEnderecoComprador VARCHAR(100) NOT NULL,
+    nrCpfcomprador NUMERIC(11,0) NOT NULL,
+    cdCidade INTEGER NOT NULL,
+    cdBairro INTEGER NOT NULL,
+    sgEstado CHAR(2) NOT NULL,
+    telComprador NUMERIC(11,0) NOT NULL,
+    FOREIGN KEY (cdCidade)
+    REFERENCES cidade(cdCidade),
+    FOREIGN KEY (cdBairro)
+    REFERENCES bairro(cdBairro),
+    FOREIGN KEY (sgEstado)
+    REFERENCES estado(sgEstado)
     );
 
 CREATE TABLE vendedor (
-	cd_vendedor INTEGER NOT NULL PRIMARY KEY,
-    nm_vendedor VARCHAR (50) NOT NULL,
-    nm_endereco VARCHAR(255) NOT NULL,
-    nr_cpf VARCHAR(11) NOT NULL,
-    cd_cidade INTEGER NOT NULL,
-    cd_bairro INTEGER NOT NULL,
-    sg_estado INTEGER NOT NULL,
-    telefone NUMERIC(11,0) NOT NULL,
-    data_nasc DATE NOT NULL,
-    FOREIGN KEY (cd_cidade)
-    REFERENCES cidade(cd_cidade),
-    FOREIGN KEY (cd_bairro)
-    REFERENCES bairro(cd_bairro),
-    FOREIGN KEY (sg_estado)
-    REFERENCES estado(sg_estado)
+	cdVendedor INTEGER NOT NULL PRIMARY KEY,
+    nmVendedor VARCHAR (50) NOT NULL,
+    nmEndereco VARCHAR(100) NOT NULL,
+    nrCpf VARCHAR(11) NOT NULL,
+    cdCidade INTEGER NOT NULL,
+    cdBairro INTEGER NOT NULL,
+    sgEstado CHAR(2) NOT NULL,
+    telefone DECIMAL(11,0) NOT NULL,
+    dataNasc DATE NOT NULL,
+    FOREIGN KEY (cdCidade)
+    REFERENCES cidade(cdCidade),
+    FOREIGN KEY (cdBairro)
+    REFERENCES bairro(cdBairro),
+    FOREIGN KEY (sgEstado)
+    REFERENCES estado(sgEstado)
+);
+CREATE TABLE imovel (
+	cdImovel INTEGER NOT NULL PRIMARY KEY,
+    cdVendedor INTEGER NOT NULL,
+    cdBairro INTEGER NOT NULL,
+    cdCidade INTEGER NOT NULL,
+    sgEstado CHAR(2) NOT NULL,
+    nmEndereco VARCHAR(255) NOT NULL,
+    nrAreaUtil DECIMAL(11,2) NOT NULL,
+    nrAreaTotal DECIMAL (11,2) NOT NULL,
+    stVendido BIT NOT NULL,
+    vlPreco NUMERIC (10,2) NOT NULL,
+    dataLancto DATE NOT NULL,
+    
+	FOREIGN KEY (cdVendedor)
+    REFERENCES vendedor(cdVendedor),
+    FOREIGN KEY (cdCidade)
+    REFERENCES cidade(cdCidade),
+    FOREIGN KEY (cdBairro)
+    REFERENCES bairro(cdBairro),
+    FOREIGN KEY (sgEstado)
+    REFERENCES estado(sgEstado)
+    
+);
+CREATE TABLE oferta(
+	cdOferta INTEGER NOT NULL PRIMARY KEY,
+    cdImovel INTEGER NOT NULL,
+    cdVendedor INTEGER NOT NULL,
+    cdComprador INTEGER NOT NULL,
+    vlOferta INTEGER NOT NULL,
+    dtOferta DATE NOT NULL,
+    stVendido BIT NOT NULL,
+    FOREIGN KEY (cdImovel)
+    REFERENCES imovel(cdImovel),
+    FOREIGN KEY (cdComprador)
+    REFERENCES comprador(cdComprador),
+    FOREIGN KEY (cdVendedor)
+    REFERENCES vendedor(cdVendedor)
 );
 CREATE TABLE faixa_imovel(
 	cd_faixa INTEGER NOT NULL PRIMARY KEY,
     nm_faixa VARCHAR (50) NOT NULL,
-    vl_minimo DECIMAL (11,2) NOT NULL,
+    vl_minimo DECIMAL (8,2) NOT NULL,
     vl_maximo DECIMAL (11,2) NOT NULL
 );
-CREATE TABLE oferta(
-	cd_oferta INTEGER NOT NULL PRIMARY KEY,
-    cd_imovel INTEGER NOT NULL,
-    cd_comprador INTEGER NOT NULL,
-    vl_oferta INTEGER NOT NULL,
-    dt_oferta DATE NOT NULL,
-    FOREIGN KEY (cd_comprador)
-    REFERENCES comprador(cd_comprador),
-    FOREIGN KEY (cd_imovel)
-    REFERENCES imovel(cd_imovel)
-);
 
-CREATE TABLE imovel (
-	cd_imovel INTEGER NOT NULL PRIMARY KEY,
-    cd_vendedor INTEGER NOT NULL,
-    cd_bairro INTEGER NOT NULL,
-    cd_cidade INTEGER NOT NULL,
-    sg_estado INTEGER NOT NULL,
-    nm_endereco VARCHAR(255) NOT NULL,
-    nr_areautil NUMERIC(10,2) NOT NULL,
-    nr_areatotal NUMERIC (10,2) NOT NULL,
-    vl_preco NUMERIC (11,2) NOT NULL,
-    st_vendido BIT NOT NULL,
-    data_lancto DATE NOT NULL,
-    cd_oferta INTEGER NOT NULL,
-    FOREIGN KEY (cd_cidade)
-    REFERENCES cidade(cd_cidade),
-    FOREIGN KEY (cd_bairro)
-    REFERENCES bairro(cd_bairro),
-    FOREIGN KEY (sg_estado)
-    REFERENCES estado(sg_estado),
-    FOREIGN KEY (cd_vendedor)
-    REFERENCES vendedor(cd_vendedor),
-    FOREIGN KEY (cd_oferta)
-    REFERENCES oferta(cd_oferta)
-);
+
+
+
     
 
