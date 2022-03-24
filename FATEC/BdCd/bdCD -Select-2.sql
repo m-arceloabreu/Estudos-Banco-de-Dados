@@ -1,0 +1,129 @@
+USE bd_cdFatec20221;
+GO
+
+/*
+OPERADORES ESPECIAIS
+IS NULL
+IS NOT NULL
+
+PARA QUE TENHAMOS VALORES NULOS É NECESSARIO QUE A COLUNA TENHA CONSTRAINT NULL, VAMOS ALTERAR ALGMAS COLUNAS NA TABELA GRAVADORA
+*/
+
+ALTER TABLE gravadora
+ALTER COLUMN endereco VARCHAR(100) NULL;
+
+ALTER TABLE gravadora
+ALTER COLUMN contato NUMERIC(11,0) NULL;
+GO
+SELECT *
+FROM gravadora;
+GO
+--INSERIR 3 GRAVADORAS
+INSERT INTO gravadora(idGravadora,nmGravadora,telefone,url)
+VALUES(6,'Sony Music','1123135700','www.sonymusic.com.br'),
+	  (7,'Columbia Records','212833800','www.columbiarecords.com'),
+	  (8,'Warner Music','8199532600','www.warnermusic.com.br');
+
+SELECT *
+FROM gravadora
+WHERE endereco IS NULL;
+GO
+
+SELECT *
+FROM gravadora
+WHERE endereco IS NOT NULL;
+
+SELECT *
+FROM gravadora;
+
+/*
+BETWEEN --> SIMPLIFICAÇÃO DO OPERADOR LOGICO AND
+UTILIZAÇÃO DE MESMA COLUNA E SINAL DE >= E <= 
+*/
+
+--RETORNE OS CDS COM PREÇO NA FAIXA ENTRE R$ 10 E R$20.99
+
+SELECT *
+FROM cd
+WHERE precoVenda BETWEEN 10 AND 20.99;
+GO
+
+--APRESENTE QUAIS AS MUSICAS COM DURAÇÃO ENTRE 2 E 4 MINUTOS
+
+SELECT *
+FROM musica
+WHERE duracao BETWEEN '00:02' AND '00:04';
+GO
+
+/*
+IN -> SIMPLIFICAÇÃO DO OPERADOR LOGICO OR
+OPERADOR RELACIONAL  = 
+*/
+
+--SEJA A EXTRAÇÃO DE GRAVADORAS 2,3,5 E 8
+SELECT *
+FROM gravadora
+WHERE idGravadora IN (2,3,5,8);
+GO
+-- QUAIS AS MUSICAS DE ID 5,7,10,13,16,19,22,24,25,27,33,38,45,51
+
+SELECT *
+FROM musica
+WHERE idMusica IN (5,7,10,13,16,19,22,24,25,27,33,38,45,51);
+GO
+
+/*
+OPERADOR LIKE -> BUSCA CARACTERES CONFORME SUAS LOCALIZAÇÕES
+POSSUI DOIS OPERADORES AUX: 
+% -> DETERMINA SE EXISTEE 0,1 ou mais caracteres antes ou depois do char que vc procura
+_ -> 1 POSIÇÃO DO CHAR QUE VC PROCURA
+*/
+
+SELECT *
+FROM gravadora
+WHERE nmGravadora LIKE '%m%';
+GO
+/* SE COLOCAR %M% EU ESPECIFICO QUE TANTO FAZ ONDE ESTEJA, MAS QUE TEM QUE TER M
+SE COLOCAR %M - TERMINA COM M
+SE COLOCAR M% - COMEÇA COM M
+SE COLOCAR _M - m é a segunda LETRA 
+*/
+
+-- GRAVADORAS COM 3 LETRAS E M NA SEGUNDA LETRA
+SELECT *
+FROM gravadora
+WHERE nmGravadora LIKE '_m_';
+
+--Musica com a primeira letra A
+SELECT * 
+FROM musica
+WHERE nmMusica LIKE 'a%';
+GO
+
+--Musica com a PENULTIMA letra A
+SELECT * 
+FROM musica
+WHERE nmMusica LIKE '%a_';
+GO
+
+-- Musicas que iniciam com a letra 
+SELECT * 
+FROM musica
+WHERE nmMusica LIKE 's%';
+GO
+
+-- MUSICAS QUE TENHAM A LETRA R
+SELECT * 
+FROM musica
+WHERE nmMusica LIKE '%R%';
+GO
+
+-- MUSICAS QUE TENHAM  A LETRA como segunda letra  E a letra O como penultima
+SELECT *
+FROM musica
+WHERE nmMusica LIKE '_a%o_';
+GO
+
+SELECT *
+FROM musica
+WHERE nmMusica LIKE '_a%' AND nmMusica LIKE '%o_';
